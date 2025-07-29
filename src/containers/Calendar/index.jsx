@@ -36,6 +36,21 @@ const Calendar = () => {
     "Грудень",
   ];
 
+  const urk_months_alt = [
+    "Січнi",
+    "Лютому",
+    "Березенi",
+    "Квітенi",
+    "Травнi",
+    "Червнi",
+    "Липнi",
+    "Серпнi",
+    "Вереснi",
+    "Жовтнi",
+    "Листопдi",
+    "Груденi",
+  ];
+
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth =
     (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
@@ -72,6 +87,7 @@ const Calendar = () => {
     if (direction === "prev") {
       if (currentMonth === 0) {
         setCurrentMonth(11);
+
         setCurrentYear(currentYear - 1);
       } else {
         setCurrentMonth(currentMonth - 1);
@@ -79,12 +95,15 @@ const Calendar = () => {
     } else {
       if (currentMonth === 11) {
         setCurrentMonth(0);
+
         setCurrentYear(currentYear + 1);
       } else {
         setCurrentMonth(currentMonth + 1);
       }
     }
   };
+
+  console.log('current month', currentMonth)
 
   const clearSelection = () => {
     setSelectedDates([]);
@@ -95,7 +114,7 @@ const Calendar = () => {
 
     const selectedMonth = months[Number(selectedDates[0].split("-")[1] - 1)];
     const selectedMonthTranslated =
-      urk_months[Number(selectedDates[0].split("-")[1] - 1)];
+      urk_months_alt[Number(selectedDates[0].split("-")[1] - 1)];
 
     // Convert dd-mm-yyyy to dd-mm format
     const shortDates = selectedDates.map((date) => {
@@ -108,14 +127,22 @@ const Calendar = () => {
     const totalPayment = lessonsCount * price;
 
     if (withTranslation) {
-      return `Заплановані уроки на ${selectedMonthTranslated}: Уроків: ${lessonsCount}, Дати: ${shortDates.join(
-        ", "
-      )}. ${totalPayment ? `Оплата ${totalPayment}грн` : ""}`;
+      return `Доброго дня! У ${selectedMonthTranslated} у вас заплановано ${lessonsCount} ${
+        lessonsCount === 1 ? "заняття" : "занять"
+      }. Дати: ${shortDates.join(", ")}. ${
+        totalPayment
+          ? `Якщо всі дати підходять, до оплати ${totalPayment} грн`
+          : ""
+      }`;
     }
 
-    return `Planned lessons in ${selectedMonth}: Lessons: ${lessonsCount}, Dates: ${shortDates.join(
+    return `Hello! You have ${lessonsCount} classes scheduled for ${selectedMonth}. Dates: ${shortDates.join(
       ", "
-    )}. ${totalPayment ? `The payment is ${totalPayment}UAH` : ""}`;
+    )}. ${
+      totalPayment
+        ? `If all dates are suitable for you, the total cost will be ${totalPayment}UAH`
+        : ""
+    }`;
   };
 
   const copyToClipboard = async (withTranslation = false) => {
@@ -138,8 +165,8 @@ const Calendar = () => {
 
     // Convert dd-mm-yyyy to dd-mm format for CSV
     const shortDates = selectedDates.map((date) => {
-      const [day, month] = date.split("-");
-      return `${day}-${month}`;
+      const [day] = date.split("-");
+      return `${day}`;
     });
 
     // Create CSV format with header and each date on a new row
@@ -317,7 +344,7 @@ const Calendar = () => {
                   Generated Message:
                 </h4>
                 <button
-                  onClick={copyToClipboard}
+                  onClick={() => copyToClipboard(false)}
                   className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
                 >
                   Copy
